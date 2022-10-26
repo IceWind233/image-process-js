@@ -12,13 +12,13 @@ let rawImageData = jpeg.decode(jpegData);
 const {width, height} = rawImageData
 
 let img = Padding(toGrayScale(rawImageData, width, height))
-img = Conv(img, kernel.gaussian)
+img = Conv(img, kernel.superGaussian, 150)
 // img = Conv(img, kernel.xGrad)
 console.log(img)
 
 img = toGrayImg(img)
 
 let newJpegEncoded = jpeg.encode(img)
-fs.writeFileSync('./output/33gaussian.jpg', newJpegEncoded.data)
+fs.writeFileSync('./output/33superGaussian.jpg', newJpegEncoded.data)
 //
 // checkImg('./output/aa.jpg')
