@@ -1,22 +1,24 @@
 import fs from 'fs'
 import jpeg from 'jpeg-js'
 
-import {toGrayImg, toGrayScale} from "./utils/index.js";
+import {toGrayImg, toGrayScale, Padding} from "./utils/index.js";
+import Conv from "./utils/convolution.js"
 import {checkImg} from "./utils/startServer.js";
-import {gaussian} from "./utils/kernels.js";
+import * as kernel from "./utils/kernels.js";
 
 // read and encode img
-let jpegData = fs.readFileSync('1.jpg');
+let jpegData = fs.readFileSync('3.jpg');
 let rawImageData = jpeg.decode(jpegData);
 const {width, height} = rawImageData
 
+let img = Padding(toGrayScale(rawImageData, width, height))
+img = Conv(img, kernel.gaussian)
+// img = Conv(img, kernel.xGrad)
+console.log(img)
 
-let img = toGrayImg(toGrayScale(rawImageData, width, height))
+img = toGrayImg(img)
 
 let newJpegEncoded = jpeg.encode(img)
-fs.writeFileSync('./output/11.jpg', newJpegEncoded.data)
-
-checkImg('./output/11.jpg')
-
-console.log(img);
-
+fs.writeFileSync('./output/33gaussian.jpg', newJpegEncoded.data)
+//
+// checkImg('./output/aa.jpg')
