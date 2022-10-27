@@ -39,18 +39,18 @@ export const toGrayImg = (grayScale) => {
 }
 
 //Padding
-export const Padding = (grayScale) =>
+export const Padding = (grayScale, r) =>
 {
     const {width, height, data} = grayScale
 
     const paddingImg = {
-        width: width + 2,
-        height: height + 2,
-        data: Buffer.alloc((width + 2) * (height + 2))
+        width: width + 2 * r,
+        height: height + 2 * r,
+        data: Buffer.alloc((width + 2 * r) * (height + 2 * r))
     }
 
     for (let i = 0; i < height*width; i ++){
-        let index = width + parseInt(i / width) * (width + 2) + i % width + 3
+        let index = (width + 2 * r + 1) * r + parseInt(i / width) * (width + 2 * r) + i % width
         paddingImg.data[index] = data[i]
     }
 

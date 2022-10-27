@@ -33,10 +33,24 @@ const yGrad = [
     1, 0, -1
 ]
 
+const test = [
+    1/9, 1/9,  1/9,
+    1/9,  1/9,  1/9,
+    1/9,  1/9,  1/9
+]
+
+const sharp = [
+     1,  1,  1,
+     1, -9,  1,
+     1,  1,  1
+]
+
 export {
     xGrad,
     yGrad,
     gaussian,
     bigGaussian,
-    superGaussian
+    superGaussian,
+    sharp,
+    test
 }
