@@ -4,6 +4,8 @@ const gaussian = [
     0.0947416, 0.118318, 0.0947416
 ]
 
+
+//param = 1/273
 const bigGaussian = [
     1, 4,  7,  4,  1,
     4, 16, 26, 16, 4,
@@ -22,27 +24,39 @@ const superGaussian = [
     0.00000067,	0.00002292,	0.00019117,	0.00038771,	0.00019117,	0.00002292,	0.00000067
 ]
 
-const xGrad = [
+const yGrad = [
      1,  2,  1,
      0,  0,  0,
     -1, -2, -1
 ]
-const yGrad = [
-    1, 0, -1,
-    2, 0, -2,
-    1, 0, -1
-]
-
-const test = [
-    1/9, 1/9,  1/9,
-    1/9,  1/9,  1/9,
-    1/9,  1/9,  1/9
+const xGrad = [
+    -1, 0,  1,
+    -2, 0,  2,
+    -1, 0,  1
 ]
 
 const sharp = [
-     1,  1,  1,
-     1, -9,  1,
-     1,  1,  1
+     0,  1,  0,
+     1, -5,  1,
+     0,  1,  0
+]
+
+const Laplace = [
+    0,  1,  0,
+    1, -4,  1,
+    0,  1,  0
+]
+
+const LaplaceEx = [
+    1,  1,  1,
+    1, -8,  1,
+    1,  1,  1
+]
+
+const test = [
+    0, 0, 0,
+    0, 1, 0,
+    0, 0, 0
 ]
 
 export {
@@ -52,5 +66,7 @@ export {
     bigGaussian,
     superGaussian,
     sharp,
+    Laplace,
+    LaplaceEx,
     test
 }

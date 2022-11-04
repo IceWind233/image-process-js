@@ -1,58 +1,114 @@
-// to grayscale
-export const toGrayScale = (rawImg, width, height) => {
+import jpeg from "jpeg-js";
+import fs from "fs";
+
+/*
+* to grayscale
+* @param path the img u wanna decode to gray scale
+* @param channel the channel of the img default is 4 and other number is not available
+* */
+export const toGrayScale = (path, channels = 4) => {
+    let rawImg = jpeg.decode(fs.readFileSync(path))
+
+    const {data, width, height} = rawImg
+    let r = Buffer.alloc(width * height)
     const grayScale = {
         width: width,
         height: height,
-        data: Buffer.alloc(width * height)
+        data: []
     }
-    const {data} = rawImg
-    for (let i = 0; i < data.length; i += 4){
-        let tmp = i/4
-        grayScale.data[tmp] =
+
+    for (let i = 0; i < data.length; i += channels) {
+
+        r[Math.floor(i / 4)] = (
             data[i] * 0.2126 +
             data[i + 1] * 0.7152 +
-            data[i + 2]  * 0.0722
+            data[i + 2] * 0.0722
+        )
+    }
+    // transfer to 2d array
+    for (let i = 0; i < height * width; i += width) {
+        grayScale.data.push(r.slice(i, i + width))
     }
     return grayScale
+
 }
 
-//convert grayscale to img
-export const toGrayImg = (grayScale) => {
+// convert grayscale to img
+// @param grayScale gray scale of img
+// @param path output file ,default file is './'
+// @param channel the channel of the img default is 4 and other number is not available
+export const toGrayImg = (grayScale,
+                          path = './Demo.jpg',
+                          channels = 4) => {
     const {data, width, height} = grayScale
     const grayImg = {
         width,
         height,
-        data: Buffer.alloc(width * height * 4)
+        data: Buffer.alloc(width * height * channels)
     }
     const {data: imgData} = grayImg
-    let i = 0
-    while (i < width * height * 4){
-        let tmp = i
-        imgData[i++] = data[tmp/4]    // channel r
-        imgData[i++] = data[tmp/4]    // channel g
-        imgData[i++] = data[tmp/4]    // channel b
-        imgData[i++] = 0xff         // channel alpha
-
+    for (let i = 0; i < height; i++) {
+        for (let j = 0; j < width; j++) {
+            let index = (i * width + j) * channels
+            imgData[index] = data[i][j]    // channel r
+            imgData[index + 1] = data[i][j]    // channel g
+            imgData[index + 2] = data[i][j]    // channel b
+            imgData[index + 3] = 0xff          // channel alpha
+        }
     }
 
-    return grayImg
+    let newJpegEncoded = jpeg.encode(grayImg)
+    fs.writeFileSync(path, newJpegEncoded.data)
 }
 
 //Padding
-export const Padding = (grayScale, r) =>
-{
-    const {width, height, data} = grayScale
-
+/*
+* @param {number} r Math.floor(kernel's size/2)
+*
+*/
+export const Padding = (grayScale, r) => {
     const paddingImg = {
-        width: width + 2 * r,
-        height: height + 2 * r,
-        data: Buffer.alloc((width + 2 * r) * (height + 2 * r))
+        width: grayScale.width + 2 * r,
+        height: grayScale.height + 2 * r,
+        data: []
     }
-
-    for (let i = 0; i < height*width; i ++){
-        let index = (width + 2 * r + 1) * r + parseInt(i / width) * (width + 2 * r) + i % width
-        paddingImg.data[index] = data[i]
+    const {width, height, data} = grayScale
+    for (let i = 0; i < r; i++) {
+        data.unshift(Buffer.alloc(width))
+        data.push(Buffer.alloc(width))
+    }
+    for (let i = 0; i < paddingImg.height; i++) {
+        let buf = Buffer.alloc(paddingImg.width)
+        data[i].copy(buf, r, 0)
+        paddingImg.data.push(buf)
     }
 
     return paddingImg
+}
+
+//img add img
+export const imgAdding = (img1, img2) => {
+    const res = {
+        width: img1.width,
+        height: img1.height,
+        data: []
+    }
+
+    for (let i = 0; i < res.height; i++) {
+        let buf = Buffer.alloc(res.width)
+        for (let j = 0; j < res.width; j++)
+            buf[j] = Math.sqrt(img1.data[i][j] ** 2 + img2.data[i][j] ** 2)
+        res.data.push(buf)
+    }
+
+    return res
+
+}
+
+export function nonMax(grayScale) {
+    for (let i = 0; i < grayScale.height; i ++){
+        for (let j = 0; j < grayScale.width; j++){
+            grayScale.data[i][j] = grayScale.data[i][j] > 230 ? 255 : 0
+        }
+    }
 }
