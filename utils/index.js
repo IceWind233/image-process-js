@@ -112,3 +112,15 @@ export function nonMax(grayScale) {
         }
     }
 }
+
+export const drawLine = (grayScale, params) => {
+    console.log(params)
+    for (let i = 0; i < params.length; i ++){
+        for (let x = 0; x < grayScale.width; x ++) {
+            let y = params[i].a * x + params[i].b
+            if ( y > 0 && y < grayScale.height ) {
+                grayScale.data[y][x] = 255
+            }
+        }
+    }
+}
