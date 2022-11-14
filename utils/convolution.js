@@ -1,9 +1,10 @@
 import {Padding} from "./index.js";
 
-export default function Conv(grayScale, kernel, param = 1) {
+export default function Conv(grayScale, kernel, param = 1, isPadding = true) {
     const r = Math.floor(Math.sqrt(kernel.length) / 2)
-
-    grayScale = Padding(grayScale, r)
+    if (isPadding){
+        grayScale = Padding(grayScale, r)
+    }
     const {data, width, height} = grayScale
     const newWidth = width - 2 * r
     const newHeight = height - 2 * r

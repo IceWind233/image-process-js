@@ -28,7 +28,7 @@ export const Hough = (grayScale, num) => {
     for (let i = 0; i < 2 * height; i ++) {
         for (let j = 0; j < 2 * height; j ++) {
             if ( HoughMatrix[j][i] !== 0 ) {
-                dec.push({a: j - height, b: i - height, value: HoughMatrix[j][i]})
+                dec.push({a: j - height, b: height - i, value: HoughMatrix[j][i]})
             }
         }
     }
